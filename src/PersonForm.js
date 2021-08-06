@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import contactServer from "./services/contacts";
 import uuid from "react-uuid";
 
-const PersonForm = ({ setPersons, persons }) => {
+const PersonForm = ({ setPersons, persons, handleAlert }) => {
   const [newName, setNewName] = useState("");
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
 
@@ -23,7 +23,12 @@ const PersonForm = ({ setPersons, persons }) => {
       //make post request to create contact
       contactServer
         .create(newPerson)
-        .then(response => setPersons([...persons, response])); //set persons state with the response
+        .then(response => {
+          setPersons([...persons, response]);
+        })
+        .then(response => {
+          handleAlert({ type: "success", message: `Added ${newPerson.name}` });
+        }); //set persons state with the response
     } else {
       //if to update
       const confrm = window.confirm(
@@ -35,6 +40,12 @@ const PersonForm = ({ setPersons, persons }) => {
           .update(dupl[0].id, newPerson)
           .then(response =>
             contactServer.getAll().then(results => setPersons(results))
+          )
+          .then(response =>
+            handleAlert({
+              type: "success",
+              message: `Updated ${newPerson.name}`,
+            })
           );
       }
     }
