@@ -8,6 +8,7 @@ const App = () => {
   const [persons, setPersons] = useState([]);
 
   useEffect(() => {
+    //set the persons state when page load
     contactServer.getAll().then(response => {
       setPersons(response);
     });
@@ -21,7 +22,7 @@ const App = () => {
       <h2>Form</h2>
       <PersonForm setPersons={setPersons} persons={persons} />
       <h2>Numbers</h2>
-      <Persons persons={persons} />
+      <Persons persons={persons} setPersons={setPersons} />
     </div>
   );
 };
