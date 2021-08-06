@@ -1,15 +1,24 @@
 import React, { useState } from "react";
+import contactServer from "./services/contacts";
+import uuid from "react-uuid";
 
 const PersonForm = ({ setPersons, persons }) => {
   const [newName, setNewName] = useState("");
-  const [newPhone, setNewPhone] = useState("");
+  const [newPhoneNumber, setNewPhoneNumber] = useState("");
+
   const onSubmit = e => {
     e.preventDefault();
     const dupl = persons.filter(person => person.name === newName);
 
     if (!dupl[0]) {
-      const newPersons = [...persons, { name: newName, phone: newPhone }];
-      setPersons(newPersons);
+      //create the person object and assign id
+      const newPersons = [
+        ...persons,
+        { id: uuid(), name: newName, phone: newPhoneNumber },
+      ];
+      contactServer.create(newPersons).then(response => console.log(response));
+
+      setPersons(newPersons); //set frontend state
     } else {
       alert(`${newName} already exist`);
     }
@@ -23,7 +32,7 @@ const PersonForm = ({ setPersons, persons }) => {
 
       <div>
         number:{" "}
-        <input name='phone' onChange={e => setNewPhone(e.target.value)} />
+        <input name='phone' onChange={e => setNewPhoneNumber(e.target.value)} />
       </div>
       <div>
         <button type='submit'>add</button>
